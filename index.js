@@ -13,7 +13,7 @@ const { ObjectId } = require('mongodb');
 const app = express();
 app.use(express.json());
 app.use(cors({
-    origin: "*"
+    origin: "https://master--stellar-blancmange-40b20e.netlify.app"
 }))
 
 const registerRoute = require('./routes/register');
