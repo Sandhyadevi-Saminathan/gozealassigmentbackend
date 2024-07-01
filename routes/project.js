@@ -6,6 +6,54 @@ const URL = process.env.DB;
 
 
 router.post('/', async (req, res) => {
+  const { projectName, startDate, dueDate, description, status, userId } = req.body; // Ensure userId is sent from frontend
+  console.log(req.body);
+
+  try {
+      // Connect to MongoDB
+      const client = new mongoClient(URL, { useNewUrlParser: true, useUnifiedTopology: true });
+      await client.connect();
+
+      // Access the 'project' database and 'projects' collection
+      const db = client.db('project');
+      const collection = db.collection('projects');
+
+      // Insert project details into MongoDB
+      const result = await collection.insertOne({
+          projectName,
+          startDate,
+          dueDate,
+          description,
+          status,
+          userId, // Add userId to associate project with user
+      });
+
+      // Close MongoDB connection
+      await client.close();
+
+      // Respond with the inserted project data
+      res.status(200).json({ message: "Project created", project: result.ops[0] });
+  } catch (err) {
+      console.error('Error adding project:', err);
+      res.status(500).json({ error: 'Failed to add project' });
+  }
+});
+
+router.get('/user-projects/:userId', async (req, res) => {
+  try {
+      const client = new mongoClient(URL);
+      const db = client.db('project');
+      const projects = await db.collection('projects').find({ userId: req.params.userId }).toArray();
+      res.json(projects);
+  } catch (err) {
+      console.error('Error fetching user projects:', err);
+      res.status(500).json({ error: 'Failed to fetch user projects' });
+  }
+});
+
+
+
+router.post('/', async (req, res) => {
     const { projectName,startDate, dueDate,description,status} = req.body;
     console.log(req.body);
 
