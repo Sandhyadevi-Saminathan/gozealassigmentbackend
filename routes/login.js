@@ -29,8 +29,17 @@ router.post('/', async (req, res) => {
             res.status(401).json({ message: "Email id or password donot match" });
         }
     } catch (error) {
-        console.log(error)
-    }
+        console.error("Error during login:", error);
+        const errorPayload = {
+            message: "Server error",
+            originalMessage: error.message,
+            originalStatus: error.status || 500, // Assuming status is a custom field you set
+        };
+
+        res.status(500).json(errorPayload);
+        // Handle server error
+       
+    } 
 })
 
 
