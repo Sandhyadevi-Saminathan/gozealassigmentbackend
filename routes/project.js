@@ -48,7 +48,14 @@ router.post('/', async (req, res) => {
       res.json(projects);
     } catch (err) {
       console.error('Error fetching projects:', err);
-      res.status(500).json({ error: 'Failed to fetch projects' });
+     
+        const errorPayload = {
+            message: "Server error",
+            originalMessage: err.message,
+            originalStatus: err.status || 500, // Assuming status is a custom field you set
+        };
+
+        res.status(500).json(errorPayload);
     }
   });
 
