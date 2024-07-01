@@ -8,17 +8,24 @@ const secret = process.env.SECRET;
 
 router.post('/', async (req, res) => {
     try {
-        await mongoClient.connect();
-        const db = mongoClient.db('project');
+        let connection = await mongoClient.connect(URL);
+        let db = connection.db('project');
         const collection = db.collection("register");
-        
         const user = await collection.findOne({ email: req.body.email });
+        res.json({user})
 
         if (user) {
-            const passwordResult = await bcrypt.compare(req.body.password, user.password);
-            if (passwordResult) {
-                const token = jwt.sign({ userid: user._id }, secret, { expiresIn: '1h' });
-                res.json({ message: "Login Success", token, user });
+            // Check if user.password is a bcrypt hash before comparing
+            if (typeof user.password === 'string' && user.password.startsWith('$2b$')) {
+                let passwordResult = await bcrypt.compare(req.body.password, user.password);
+                res.json({passwordResult})
+
+                if (passwordResult) {
+                    const token = jwt.sign({ userid: user._id }, secret, { expiresIn: '1h' })
+                    res.json({ message: "Login Success", token, user });
+                } else {
+                    res.status(401).json({ message: "Email id or password do not match" });
+                }
             } else {
                 res.status(401).json({ message: "Email id or password do not match" });
             }
@@ -34,9 +41,12 @@ router.post('/', async (req, res) => {
         };
 
         res.status(500).json(errorPayload);
-      
+        // Handle server error
+       
     } finally {
-        await mongoClient.close(); // Close the MongoDB connection
+        if (connection) {
+            await connection.close();
+        }
     }
 });
 
