@@ -13,10 +13,7 @@ const { ObjectId } = require('mongodb');
 const app = express();
 app.use(express.json());
 app.use(cors({
-  origin: 'https://master--stellar-blancmange-40b20e.netlify.app', 
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
+  origin: 'https://master--stellar-blancmange-40b20e.netlify.app'
 }));
 
 
