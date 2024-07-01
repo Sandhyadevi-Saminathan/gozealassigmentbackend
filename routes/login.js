@@ -32,6 +32,7 @@ router.post('/', async (req, res) => {
         } else {
             res.status(401).json({ message: "Email id or password do not match" });
         }
+        await connection.close();
     } catch (error) {
         console.error("Error during login:", error);
         const errorPayload = {
@@ -43,11 +44,7 @@ router.post('/', async (req, res) => {
         res.status(500).json(errorPayload);
         // Handle server error
        
-    } finally {
-        if (connection) {
-            await connection.close();
-        }
-    }
+    } 
 });
 
 
