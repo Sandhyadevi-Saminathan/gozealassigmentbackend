@@ -12,13 +12,13 @@ router.post('/', async (req, res) => {
         let db = connection.db('project');
         const collection = db.collection("register");
         const user = await collection.findOne({ email: req.body.email });
-        res.json({user})
+       
 
         if (user) {
             // Check if user.password is a bcrypt hash before comparing
             if (typeof user.password === 'string' && user.password.startsWith('$2b$')) {
                 let passwordResult = await bcrypt.compare(req.body.password, user.password);
-                res.json({passwordResult})
+               
 
                 if (passwordResult) {
                     const token = jwt.sign({ userid: user._id }, secret, { expiresIn: '1h' })
@@ -26,24 +26,12 @@ router.post('/', async (req, res) => {
                 } else {
                     res.status(401).json({ message: "Email id or password do not match" });
                 }
-            } else {
-                res.status(401).json({ message: "Email id or password do not match" });
             }
-        } else {
-            res.status(401).json({ message: "Email id or password do not match" });
-        }
+        } 
         await connection.close();
     } catch (error) {
         console.error("Error during login:", error);
-        const errorPayload = {
-            message: "Server error",
-            originalMessage: error.message,
-            originalStatus: error.status || 500, // Assuming status is a custom field you set
-        };
-
-        res.status(500).json(errorPayload);
-        // Handle server error
-       
+              
     } 
 });
 
