@@ -5,7 +5,7 @@ const ObjectId = require('mongodb').ObjectId;
 const URL = process.env.DB;
 
 
-router.post('/', async (req, res) => {
+router.post('/projects', async (req, res) => {
   const { projectName, startDate, dueDate, description, status, userId } = req.body; // Ensure userId is sent from frontend
   console.log(req.body);
 
