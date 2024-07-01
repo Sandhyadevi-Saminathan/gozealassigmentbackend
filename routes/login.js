@@ -4,9 +4,10 @@ const mongoClient = require('mongodb').MongoClient;
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 const URL = process.env.DB;
-const secret = process.env.SECRET;
+const secret = process.env.SECRET; 
 
 router.post('/', async (req, res) => {
+    
     try {
         let connection = await mongoClient.connect(URL);
         let db = connection.db('project');
