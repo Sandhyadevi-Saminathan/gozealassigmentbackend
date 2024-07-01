@@ -27,7 +27,14 @@ router.post('/', async (req, res) => {
         }
     } catch (error) {
         console.error("Error during login:", error);
-        res.status(500).json({ message: "Server error" });
+        const errorPayload = {
+            message: "Server error",
+            originalMessage: error.message,
+            originalStatus: error.status || 500, // Assuming status is a custom field you set
+        };
+
+        res.status(500).json(errorPayload);
+      
     } finally {
         await mongoClient.close(); // Close the MongoDB connection
     }
