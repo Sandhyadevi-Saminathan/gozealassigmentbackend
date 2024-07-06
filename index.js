@@ -2,16 +2,18 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv").config();
 const mongodb = require("mongodb");
-
+const jwt = require("jsonwebtoken");
 const mongoClient = mongodb.MongoClient;
 const URL = process.env.DB;
-
+const SECRET = process.env.SECRET;
 
 const { ObjectId } = require('mongodb');
 
 
 const app = express();
 app.use(express.json());
+
+
 app.use(cors({
   origin: 'https://master--stellar-blancmange-40b20e.netlify.app'
 }));
